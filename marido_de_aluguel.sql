@@ -2,6 +2,11 @@
 -- PostgreSQL database dump
 --
 
+CREATE TABLE Cidade (
+  codigo smallint NOT NULL PRIMARY KEY,
+  nome varchar(50) NOT NULL
+);
+
 CREATE TABLE Pessoa (
 	id serial NOT NULL PRIMARY KEY,
   nome varchar(60) NOT NULL,
@@ -10,16 +15,48 @@ CREATE TABLE Pessoa (
 	telefone varchar(40) NULL,
 
   cidade_codigo smallint 
-	REFERENCES Cidade(codigo),
+	  REFERENCES Cidade(codigo),
 
   CHECK (sexo IN ( 'F' , 'M', 'O' ))
-)
+);
 
-INSERT INTO Cidade VALUES (1, 'Três Lagoas');
-INSERT INTO Cidade VALUES (2, 'Castilho');
-INSERT INTO Cidade VALUES (3, 'Andradina');
+CREATE TABLE Prestador
+(
+	id int NOT NULL PRIMARY KEY,
+	pessoa_id int NOT NULL REFERENCES Pessoa(id),
+	preco_visita numeric(5,2) NOT NULL
+);
 
-INSERT INTO Pessoa(id, nome, sexo, cidade_codigo, data_nasc) VALUES
+CREATE TABLE Cliente (
+  id int NOT NULL PRIMARY KEY,
+  pessoa_id int NOT NULL REFERENCES Pessoa(id)
+);
+
+CREATE TABLE Habilidade (
+  id serial NOT NULL PRIMARY KEY,
+  nome varchar(60) NOT NULL,
+	preco_base numeric(6,2) NOT NULL
+);
+
+CREATE TABLE Servico (
+	id smallint NOT NULL PRIMARY KEY,
+  CPF varchar(11) NOT NULL UNIQUE,
+  id_habilidade smallint 
+	  REFERENCES Habilidade(id)
+);
+
+CREATE TABLE Agendamento (
+  id smallint NOT NULL PRIMARY KEY,
+	pessoa_id int NOT NULL REFERENCES Cliente(id),
+  data_visita timestamp NOT NULL
+);
+
+INSERT INTO Cidade(codigo, nome) VALUES 
+(1, 'Três Lagoas'),
+(2, 'Castilho'),
+(3, 'Andradina');
+
+INSERT INTO Pessoa(id, sexo, cidade_codigo, data_nasc, nome) VALUES
   (0, 'M',    1, '1990-12-25', 'ARTHUR RICARDO SANT ANA DE SOUZA'), 
   (1, 'M',    2, '1953-01-17', 'BRUNO LOURENÇO PEREIRA'),
   (2, 'F',    3, '1988-02-18', 'CAMILA EDUARDA RUIS FONSECA BALDO'),
@@ -50,3 +87,40 @@ INSERT INTO Pessoa(id, nome, sexo, cidade_codigo, data_nasc) VALUES
 	(27,'M',    1, '2022-06-19', 'CARLOS EDUARDO SANTOS MARTINS'),
 	(28,'F',    1, '2022-06-19', 'ANA CARLA MARIA MARTINS'),
 	(29,'M',    3, '2001-10-10', 'PAULO DE TARSO ARAUJO');
+
+  INSERT INTO Prestador(id, pessoa_id, preco_visita) values 
+  (1, 0, 30),
+  (2, 1, 25),
+  (3, 2, 35),
+  (4, 3, 15),
+  (5, 4, 40),
+  (6, 5, 30),
+  (7, 6, 25),
+  (8, 7, 35),
+  (9, 8, 15),
+  (10, 9, 40),
+  (11, 10, 20),
+  (12, 11, 45);
+
+  INSERT INTO Cliente(id, pessoa_id) values
+  (1, 12),
+  (2, 13),
+  (3, 14),
+  (4, 15),
+  (5, 16),
+  (6, 17),
+  (7, 18),
+  (8, 19),
+  (9, 20),
+  (10, 22),
+  (20, 26),
+  (25, 29),
+  (35, 21);
+
+INSERT INTO Habilidade(id, nome, preco_base) VALUES 
+  (1, 'Montar pequenos móveis', 120),
+  (2, 'Pequenos reparos', 533),
+  (3, 'Instalação de lava/secadora roupa', 108),
+  (4, 'Pequenos reparos elétricos', 467),
+  (5, 'Instalar suporte de TV', 150),
+  (6, 'Instalar torneira simples', 210);
