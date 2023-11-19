@@ -36,14 +36,15 @@ CREATE TABLE Habilidade (
 
 CREATE TABLE Servico (
 	id smallint NOT NULL PRIMARY KEY,
-  CPF varchar(11) NOT NULL UNIQUE,
+  id_prestador int NOT NULL REFERENCES Prestador(id),
   id_habilidade smallint 
 	  REFERENCES Habilidade(id)
 );
 
 CREATE TABLE Agendamento (
   id smallint NOT NULL PRIMARY KEY,
-	pessoa_id int NOT NULL REFERENCES Cliente(id),
+	cliente_id int NOT NULL REFERENCES Cliente(id),
+	servico_id int NOT NULL REFERENCES Servico(id),
   data_visita timestamp NOT NULL
 );
 
@@ -120,3 +121,13 @@ INSERT INTO Habilidade(id, nome, preco_base) VALUES
   (4, 'Pequenos reparos elétricos', 467),
   (5, 'Instalar suporte de TV', 150),
   (6, 'Instalar torneira simples', 210);
+
+  INSERT INTO Servico(id, id_prestador, id_habilidade) VALUES
+  (1, 4, 2),
+  (2, 5, 1),
+  (3, 6, 3);
+
+  INSERT INTO Agendamento(id, cliente_id, servico_id, data_visita) VALUES
+  (1, 5, 1, '15/11/2023'),
+  (2, 25, 2, '15/11/2023'),
+  (3, 10, 3, '15/11/2023');
